@@ -7,8 +7,9 @@ gcc maze.c -o maze
 
 # run
 
-./maze
-Enter the dimensions of the maze (n m): 31 101
+`$ ./maze`
+
+`Enter the dimensions of the maze (n m): 31 101`
 
 ```
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
