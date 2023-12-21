@@ -4,6 +4,10 @@
 
 #define WALL '#'
 #define PATH ' '
+#define PLUS '+'
+#define EMPTY ' '
+#define HORZ '-'
+#define VERT '|'
 
 void initializeMaze(char **maze, int n, int m) {
     for (int i = 0; i < n; i++) {
@@ -53,37 +57,60 @@ void makeExit(char **maze, int n, int m) {
     maze[n - 2][m - 1] = PATH; // Exit
 }
 
-void printMaze(char **maze, int n, int m) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            if (maze[i][j] == PATH) {
-                putchar(PATH);
-            } else {
-                // Determine the character to print based on the position
-                if ((i % 2 == 0) && (j % 2 == 0)) {
-                    putchar('+'); // Corners
-                } else if (i % 2 == 0) {
-                    putchar('-'); // Horizontal walls
-                } else {
-                    putchar('|'); // Vertical walls
-                }
-            }
-        }
+void printMaze(char **maze, int n, int m) { 
+
+    char x, x_12, x_3, x_6, x_9;
+         
+    for (int i = 0; i < n; i++) 
+      {
+        for (int j = 0; j < m; j++) 
+           { 
+                                   x=maze[i+0][j+0];    
+                     if (i>0)      x_12=maze[i-1][j+0]; else x_12=EMPTY;
+                     if (j>0)      x_9=maze[i+0][j-1]; else x_9=EMPTY;
+                     if ((i+1)<n)  x_6=maze[i+1][j+0]; else x_6=EMPTY;
+                     if ((j+1)<m)  x_3=maze[i+0][j+1]; else x_3=EMPTY;
+
+                 
+             if (maze[i][j] == PATH) { putchar(PATH); }
+              else {
+                     if      ((x==PLUS)&&(x_9==EMPTY)&&(x_12==VERT)&&(x_3==EMPTY)&&(x_6==VERT)) printf("│");       
+                     else if ((x==PLUS)&&(x_9==HORZ)&&(x_12==EMPTY)&&(x_3==HORZ)&&(x_6==EMPTY)) printf("─");    
+                     else if ((x==PLUS)&&(x_9==EMPTY)&&(x_12==EMPTY)&&(x_3==HORZ)&&(x_6==EMPTY)) printf("─");  
+                     else if ((x==PLUS)&&(x_9==HORZ)&&(x_12==VERT)&&(x_3==EMPTY)&&(x_6==VERT)) printf("┤");   
+                     else if ((x==PLUS)&&(x_9==EMPTY)&&(x_12==VERT)&&(x_3==HORZ)&&(x_6==VERT)) printf("├");    
+                     else if ((x==PLUS)&&(x_9==HORZ)&&(x_12==VERT)&&(x_3==EMPTY)&&(x_6==EMPTY)) printf("┘");   
+                     else if ((x==PLUS)&&(x_9==HORZ)&&(x_12==EMPTY)&&(x_3==EMPTY)&&(x_6==VERT)) printf("┐");    
+                     else if ((x==PLUS)&&(x_9==HORZ)&&(x_12==EMPTY)&&(x_3==HORZ)&&(x_6==VERT)) printf("┬");  
+                     else if ((x==PLUS)&&(x_9==HORZ)&&(x_12==VERT)&&(x_3==HORZ)&&(x_6==EMPTY)) printf("┴");  
+                     else if ((x==PLUS)&&(x_9==EMPTY)&&(x_12==VERT)&&(x_3==HORZ)&&(x_6==EMPTY)) printf("└"); 
+                     else if ((x==PLUS)&&(x_9==HORZ)&&(x_12==VERT)&&(x_3==EMPTY)&&(x_6==EMPTY)) printf("┘"); 
+                     else if ((x==PLUS)&&(x_9==EMPTY)&&(x_12==EMPTY)&&(x_3==EMPTY)&&(x_6==VERT)) printf("│"); 
+                     else if ((x==PLUS)&&(x_9==EMPTY)&&(x_12==VERT)&&(x_3==EMPTY)&&(x_6==EMPTY)) printf("│");   
+                     else if ((x==PLUS)&&(x_9==EMPTY)&&(x_12==VERT)&&(x_3==EMPTY)&&(x_6==VERT)) printf("│");   
+                     else if ((x==PLUS)&&(x_9==EMPTY)&&(x_12==EMPTY)&&(x_3==HORZ)&&(x_6==VERT)) printf("┌");  
+                     else if ((x==PLUS)&&(x_9==HORZ)&&(x_12==EMPTY)&&(x_3==EMPTY)&&(x_6==EMPTY)) printf("─");  
+                     else if ((x==PLUS)&&(x_9==EMPTY)&&(x_12==EMPTY)&&(x_3==EMPTY)&&(x_6==VERT)) printf("│"); 
+                     else if ((x==HORZ)) printf("─");
+                     else if ((x==VERT)) printf("│");
+                     else printf("─");   
+                  }
+          }
         putchar('\n');
     }
 }
 
+int main(int argc, char *argv[]) { if (argc != 3) { fprintf(stderr, "Usage: %s n m\n", argv[0]); return 1; }
 
-int main() {
-    int n, m;
-    printf("Enter the dimensions of the maze (n m): ");
-    scanf("%d %d", &n, &m);
+    int n = atoi(argv[1]);
+    int m = atoi(argv[2]);
 
     char **maze = (char **)malloc(n * sizeof(char *));
     if (maze == NULL) {
         perror("Memory allocation failed");
         return 1;
     }
+
     for (int i = 0; i < n; i++) {
         maze[i] = (char *)malloc(m * sizeof(char));
         if (maze[i] == NULL) {
@@ -101,11 +128,19 @@ int main() {
     initializeMaze(maze, n, m);
     carveMaze(maze, 1, 1, n, m);
     makeExit(maze, n, m);
+
+    for (int i = 0; i < n; i++) 
+       for (int j = 0; j < m; j++) 
+           if (maze[i][j] != PATH) 
+                   {
+                     if ((i % 2 == 0) && (j % 2 == 0)) {  maze[i][j]=PLUS; }
+                       else if (i % 2 == 0) {  maze[i][j]=HORZ; }  // Horizontal walls
+                       else {  maze[i][j]=VERT; } // Vertical walls 
+                   };
+
     printMaze(maze, n, m);
 
-    for (int i = 0; i < n; i++) {
-        free(maze[i]);
-    }
+    for (int i = 0; i < n; i++) free(maze[i]);
     free(maze);
 
     return 0;
