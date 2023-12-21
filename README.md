@@ -1,5 +1,5 @@
 # maze.c
-Program in C to create a maze that is n x m in size
+Program in C to create a maze that is n x m in size where n and m are odd numbers.
 
 # compile:
 
